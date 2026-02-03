@@ -5,13 +5,33 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
+let users = [
+
 // Fake user database
-const users = [
+
     { username: "john", password: "1234" }
 ];
 
 // Store KM records
 const kmRecords = [];
+
+//User registration
+app.post("/register", (req, res) => {
+    const { username, password } = req.body;
+
+    // Check if user already exists
+    const exists = users.find(u => u.username === username);
+
+    if (exists) {
+        return res.status(400).json({ message: "Username already taken" });
+    }
+
+    // Save new user
+    users.push({ username, password });
+
+    res.json({ message: "Registration successful" });
+});
+
 
 // Login route
 app.post("/login", (req, res) => {
